@@ -1,0 +1,136 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  commons: commons.yml
+  payments: payments.yml
+
+services:
+  http:
+    PaymentMethodsService:
+      base-path: /payment-instruments
+      auth: true
+      headers:
+        X-Idempotency-Key: optional<string>
+      endpoints:
+        saveToken:
+          docs: |
+            Save a `SINGLE_USE` payment method token so it can be used
+            again later. You can optionally choose to verify the payment method
+            before vaulting. If verification fails, no payment method data will
+            be vaulted. Verification can minimise fraud and boost subscription
+            rates for recurring payments.
+
+            If you try to vault an already vaulted token, you will get the existing vaulted token back.
+          method: POST
+          path: /{paymentMethodToken}/vault
+          path-parameters:
+            paymentMethodToken:
+              type: string
+              docs: Payment method token to store.
+          request: SavePaymentMethodTokenRequest
+          response: PaymentMethodToken
+
+        list:
+          docs: Retrieve a list of stored payment methods for a customer.
+          method: GET 
+          path: /
+          query-parameters:
+            customer_id: 
+              type: commons.CustomerId
+              docs: Return payment methods for this customer ID.
+          response: ListPaymentMethodsResponse
+
+        delete: 
+          docs: Delete a saved payment method.
+          method: DELETE 
+          path: /{paymentMethodToken}
+          path-parameters:
+            paymentMethodToken: 
+              type: string
+              docs: Saved payment method token to delete.
+          response: PaymentMethodToken
+        
+        updateDefault:
+          docs: Update a saved payment method to be the default stored payment method for a customer.
+          method: POST 
+          path: /{paymentMethodToken}/default
+          path-parameters:
+            paymentMethodToken: 
+              type: string 
+              docs: Saved payment method token to set to default.
+          response: PaymentMethodToken
+
+types:
+  SavePaymentMethodTokenRequest:
+    properties:
+      customerId:
+        type: commons.CustomerId
+        docs: The ID representing the customer
+      verify:
+        type: optional<boolean>
+        docs: Whether the payment method should be verified before vaulting or not
+
+  ListPaymentMethodsResponse: 
+    properties:
+      data: list<PaymentMethodToken>
+
+  PaymentMethodToken: 
+    union:
+      PAYMENT_CARD: PaymentCardTokenSchemaPaymentMethodsAPI
+      PAYPAL_BILLING_AGREEMENT: payments.PayPalBillingAgreementSchema
+      GOCARDLESS_MANDATE: payments.GoCardlessMandateSchema
+      KLARNA_CUSTOMER_TOKEN: payments.KlarnaCustomerTokenSchema
+      APAYA_CUSTOMER_TOKEN: payments.ApayaCustomerTokenSchema
+    discriminant: paymentMethodType
+
+  PaymentCardTokenSchemaPaymentMethodsAPI: 
+    properties:
+      paymentMethodData: PaymentCardTokenAPISchemaPaymentMethodsAPI
+      createdAt:
+        type: optional<datetime>
+        docs: Creation date & time of the object (UTC)
+      deletedAt:
+        type: optional<datetime>
+        docs: Date & time when this object was revoked. (UTC)
+      deleted:
+        type: optional<boolean>
+        docs: Whether or not this object has been revoked.
+      token:
+        type: optional<string>
+        docs: The vaulted payment method token.
+      tokenType:
+        type: optional<string>
+        docs: MULTI_USE means a vaulted token that can be re-used with subsequent payments.
+      analyticsId:
+        type: optional<string>
+        docs: Unique analytics identifier corresponding to a payment method
+      customerId:
+        type: optional<string>
+        docs: The ID representing the customer
+      description:
+        type: optional<string>
+        docs: A friendly description given by the user
+      default:
+        type: optional<boolean>
+        docs: Whether or not this payment method is the default
+      isVerified:
+        type: optional<boolean>
+        docs: Whether or not this payment method was verified
+
+  PaymentCardTokenAPISchemaPaymentMethodsAPI: 
+    docs: Used exclusively by the Payment Methods API
+    properties:
+      last4Digits: string
+      expirationMonth: string
+      expirationYear: string
+      cardholderName: optional<string>
+      network: optional<string>
+      networkTransactionId: 
+        type: optional<string> 
+        docs: An ID for the transaction assigned by the card network. Used to correlate recurring payments.
+      accountFundingType: 
+        type: optional<commons.AccountFundingType>
+        docs: The type of card, e.g. Debit, Credit
+
+  
+

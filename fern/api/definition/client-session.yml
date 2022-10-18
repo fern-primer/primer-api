@@ -1,0 +1,345 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  commons: commons.yml
+
+services:
+  http:
+    ClientSessionService:
+      auth: true
+      base-path: /client-session
+      endpoints:
+        create:
+          docs: |
+            Creating a client session generates a client token: a temporary key used to initialize Universal Checkout and authenticate it against your account.
+            Universal Checkout automatically retrieves all the settings from the client session and the Dashboard to configure the payment methods and the checkout experience.
+
+            Note:
+            When creating a Client Session, please make sure to provide currencyCode, orderId, and at least one of amount or lineItems.
+            If any of these are not yet available, you can provide them when making the payment request.
+            POST /client-session does not have required fields as all fields are not always known when a client session is created.
+            Use PATCH /client-session to update the parameters throughout the checkout session.
+
+            Client tokens expire after 24 hours.
+          method: POST
+          path: /
+          request: CreateClientSessionRequest
+          response: ClientSession
+
+        get:
+          docs: Retrieve a client session. This API call retrieves all the details associated with the client session corresponding to the client token that is provided in the request. The fields with empty values are excluded from the response.
+          method: GET
+          path: /
+          query-parameters:
+            clientToken:
+              type: string
+              docs: Client token corresponding to the client session to retrieve
+          response: ClientSession
+
+        update:
+          docs: |
+            Update a client session.
+            The only required field for the request is clientToken. Other supported request fields are same as for the POST /client-session API call.
+            You need to specify only the fields you wish to update. However, if the items that are to be updated are of type array, then you need to provide the complete array along with modified items.
+            If you wish to update nested fields on the client session, such as the customer emailAddress field, you can pass the customer object with only one field, emailAddress, to update.
+            If you simply wish to clear the value of the field, pass null as your input.
+            You can update paymentMethod.vaultOnSuccess field but updating of the paymentMethod.options field through PATCH /client-session is not supported.
+            The response will contain all the fields of the client session including the ones that were changed.
+          method: PATCH
+          path: /
+          request: UpdateClientSessionRequest
+          response: ClientSession
+
+types:
+  CreateClientSessionRequest:
+    properties:
+      orderId:
+        type: optional<commons.OrderId>
+        docs: Your reference for the payment.
+      currencyCode:
+        type: optional<commons.CurrencyCode>
+        docs: |
+          The 3-letter currency code in ISO 4217 format.
+          e.g. use USD for US dollars.
+      amount:
+        type: optional<integer>
+        docs: The amount you would like to charge the customer, in minor units. e.g. for $7, use 700.
+      order:
+        type: optional<OrderDetails>
+        docs: More information associated with the order.
+      customerId:
+        type: optional<commons.CustomerId>
+        docs: |
+          A unique identifier for your customer.
+          Create a client session token with a customerId to enable the client-side SDK to retrieve and manage your customer's saved payment methods. A client session token also enables saving payment methods against this customer id.
+      customer:
+        type: optional<CustomerDetails>
+        docs: More information associated with the customer.
+      metadata:
+        type: optional<MetadataDetails>
+        docs: |
+          Additional data to be used throughout the payment lifecycle.
+          A dictionary of key-value pairs where the values can only be strings or
+          integers.
+          e.g. {"productId": 1001, "merchantId": "a13bsd62s"}
+      paymentMethod:
+        type: optional<ClientPaymentMethod>
+        docs: Enable certain options associated with the payment method.
+
+  OrderDetails:
+    properties:
+      lineItems:
+        type: optional<list<LineItem>>
+        docs: The details of the line items of the order.
+      countryCode:
+        type: optional<commons.CountryCode>
+        docs: The country in which the order is created
+      fees:
+        type: optional<list<Fee>>
+        docs: The details of fees charged.
+      shipping:
+        type: optional<ShippingDetails>
+        docs: The details of shipping charged.
+
+  LineItem:
+    properties:
+      itemId:
+        type: optional<string>
+        docs: A unique identifier for the line item.
+      name:
+        type: optional<string>
+        docs: A name of the item.
+      description:
+        type: optional<string>
+        docs: A description of the item.
+      amount:
+        type: integer
+        docs: The amount charged to the customer, in minor units.
+      quantity:
+        type: optional<integer>
+        docs: The number of the particular line item that is being ordered.
+      discountAmount:
+        type: optional<integer>
+        docs: Any discount applicable to this item, in minor units. This discount is applied for the entire line item, and not per quantity.
+      taxAmount:
+        type: optional<integer>
+        docs: The tax charged on this item, in minor units. This tax amount is applied for the entire line item, and not per quantity.
+      taxCode:
+        type: optional<string>
+        docs: The tax code associated with this item, in minor units. This is required for Primer-initiated tax calculations.
+      productType:
+        type: optional<string>
+        docs: An identifier for the product type.
+      productData:
+        type: optional<ProductData>
+        docs: Details related to the product
+
+  ProductData:
+    properties:
+      sku:
+        type: optional<string>
+        docs: The product SKU
+      brand:
+        type: optional<string>
+        docs: The product brand
+      color:
+        type: optional<string>
+        docs: The product color
+      globalTradeItemNumber:
+        type: optional<string>
+        docs: The product Global Trade Item Number (e.g. ISBN)
+      manufacturerPartNumber:
+        type: optional<string>
+        docs: The product Manufacturer Part Number
+      weight:
+        type: optional<integer>
+        docs: The product weight
+      weightUnit:
+        type: optional<string>
+        docs: The product weight unit (e.g. kg, g)
+
+  Fee:
+    properties:
+      amount:
+        type: integer
+        docs: The fee amount charged to the customer, in minor units. e.g. for $7, use 700.
+      type:
+        type: optional<string>
+        docs: The type of fee.
+      description:
+        type: optional<string>
+        docs: A description of the fee, e.g. "Currency Conversion Fee".
+
+  ShippingDetails:
+    properties:
+      amount:
+        type: optional<integer>
+        docs: The shipping amount charged to the customer, in minor units. e.g. for $7, use 700.
+
+  CustomerDetails:
+    properties:
+      emailAddress:
+        type: optional<string>
+        docs: Customer email address
+      mobileNumber:
+        type: optional<string>
+        docs: The customer's mobile number
+      firstName:
+        type: optional<string>
+        docs: The customer's first name
+      lastName:
+        type: optional<string>
+        docs: The customer's last name
+      billingAddress:
+        type: optional<commons.BillingAddress>
+        docs: Customer billing address
+      shippingAddress:
+        type: optional<commons.ShippingAddress>
+        docs: Customer shipping address
+      taxId:
+        type: optional<string>
+        docs: The customer's tax id number for tax exemptions
+      nationalDocumentId:
+        type: optional<string>
+        docs: The customer's national identification number
+
+  MetadataDetails:
+    alias: map<string, unknown>
+    docs: A dictionary of key-value pairs where the values can only be strings or integers.
+
+  ClientPaymentMethod:
+    properties:
+      vaultOnSuccess:
+        type: optional<boolean>
+        docs: Whether the payment method should be vaulted on a successful payment or not.
+      descriptor:
+        type: optional<string>
+        docs: A description of the payment, as it would typically appear on a bank statement.
+      paymentType:
+        type: optional<PaymentType>
+        docs: |
+          Payment types, primarily to be used for recurring payments.
+          Note: If you successfully vault a SINGLE_USE token on payment creation, then there's no need to set a value for this field and it will be flagged as FIRST_PAYMENT. Otherwise, see the table below for all possible values.
+      options:
+        type: optional<map<commons.SupportedPaymentMethods, NetworkOrSurchargeObject>>
+        docs: Additional options for the payment methods.
+
+  PaymentType:
+    enum:
+      - value: FIRST_PAYMENT
+        docs: a customer-initiated payment which is the first in a series of recurring payments or subscription, or a card on file scenario.
+      - value: ECOMMERCE
+        docs: a customer-initiated payment using stored payment details where the cardholder is present.
+      - value: SUBSCRIPTION
+        docs: a merchant-initiated payment as part of a series of payments on a fixed schedule and a set amount.
+      - value: UNSCHEDULED
+        docs: a merchant-initiated payment using stored payment details with no fixed schedule or amount.
+
+  NetworkOrSurchargeObject:
+    properties:
+      networks: optional<map<commons.CardNetworkType, Network>>
+      surcharge: optional<Surcharge>
+
+  Network:
+    properties:
+      surcharge: optional<Surcharge>
+
+  Surcharge:
+    properties:
+      amount:
+        type: optional<integer>
+        docs: The surcharge amount, in minor units. Surcharge amount must be used in conjunction with line item amounts, if a top level amount is passed then surcharge will not be calculated.
+
+  CardNetwork: optional<map<commons.CardNetworkType, Surcharge>>
+
+  ClientSession:
+    properties:
+      clientToken:
+        type: optional<string>
+        docs: Client token used to initialize the SDK on all platforms.
+      clientExpirationDate:
+        type: optional<datetime>
+        docs: Expiration date & time of the client token (UTC with no timezoneinfo).
+      customerId:
+        type: optional<commons.CustomerId>
+        docs: A unique identifier for your customer.
+      orderId:
+        type: optional<commons.OrderId>
+        docs: Your reference for the payment.
+      currencyCode:
+        type: optional<commons.CurrencyCode>
+        docs: |
+          The 3-letter currency code in ISO 4217 format.
+          e.g. use USD for US dollars.
+      amount:
+        type: optional<integer>
+        docs: |
+          The amount you would like to charge the customer, in minor units. e.g. for $7, use 700.
+          Some currencies, such as Japanese Yen, do not have minor units. In this case you should use the value as it is, without any formatting. For example for ¥100, use 100.
+          If the amount is provided on this level, it would override any amount calculated from the provided line items, shipping and other amounts.
+      order:
+        type: optional<OrderDetails>
+        docs: More information associated with the order.
+      customer:
+        type: optional<CustomerDetails>
+        docs: More information associated with the customer.
+      metadata:
+        type: optional<MetadataDetails>
+        docs: Additional data to be used throughout the payment lifecycle.
+      paymentMethod:
+        type: optional<ClientPaymentMethod>
+        docs: Enable certain options associated with the payment methods.
+      warnings:
+        type: optional<Warnings>
+        docs: Warning messages to indicate missing information that are required for payment methods, checkout modules and other features; or when third-party services are unavailable.
+
+  Warnings:
+    properties:
+      type:
+        type: optional<string>
+        docs: The type of the connection involved
+      code:
+        type: optional<string>
+        docs: A unique code describing the particular issue
+      message:
+        type: optional<string>
+        docs: More information as to the reason for the warning
+
+  UpdateClientSessionRequest:
+    properties:
+      clientToken:
+        type: optional<string>
+        docs: Client token for use in the Primer-JS SDK obtained via POST /client-session API call.
+      # customerId:
+      #   type: optional<commons.CustomerId>
+      #   docs: |
+      #     A unique identifier for your customer.
+      #     Create a client session token with a customerId to enable the client-side SDK to retrieve and manage your customer's saved payment methods. A client session token also enables saving payment methods against this customer id.
+      orderId:
+        type: optional<commons.OrderId>
+        docs: Your reference for the payment.
+      currencyCode:
+        type: optional<commons.CurrencyCode>
+        docs: |
+          The 3-letter currency code in ISO 4217 format.
+          e.g. use USD for US dollars.
+      amount:
+        type: optional<integer>
+        docs: The amount you would like to charge the customer, in minor units. e.g. for $7, use 700.
+      order:
+        type: optional<OrderDetails>
+        docs: More information associated with the order.
+      customer:
+        type: optional<CustomerDetails>
+        docs: More information associated with the customer.
+      metadata:
+        type: optional<MetadataDetails>
+        docs: |
+          Additional data to be used throughout the payment lifecycle.
+          A dictionary of key-value pairs where the values can only be strings or
+          integers.
+          e.g. {"productId": 1001, "merchantId": "a13bsd62s"}
+      paymentMethod:
+        type: optional<ClientPaymentMethod>
+        docs: Enable certain options associated with the payment method.
+
