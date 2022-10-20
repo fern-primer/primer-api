@@ -10,7 +10,9 @@ services:
       base-path: /payments
       auth: true
       headers:
-        X-Idempotency-Key: optional<string>
+        X-Idempotency-Key: 
+          type: optional<string>
+          name: idempotencyKey
       endpoints:
         search:
           docs: |
