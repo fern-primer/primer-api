@@ -9,8 +9,6 @@ services:
     PaymentMethodsService:
       base-path: /payment-instruments
       auth: true
-      headers:
-        X-Idempotency-Key: optional<string>
       endpoints:
         saveToken:
           docs: |
