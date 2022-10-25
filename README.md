@@ -11,12 +11,12 @@ Tagging a release on this repository will update the:
 
 This repository contains
 
-- Stytch's Fern API Definition which lives in the [definition](./fern/api/definition/) folder
+- Primer's Fern API Definition which lives in the [definition](./fern/api/definition/) folder
 - Generators (see [generators.yml](./fern/api/generators.yml))
 
 ## What is in the API Definition?
 
-The API Definition contains information about what endpoints, types, and errors are used in the API. The definition is broken into smaller files such as [magic-links.yml](fern/api/definition/magic-links.yml).
+The API Definition contains information about what endpoints, types, and errors are used in the API. The definition is broken into smaller files such as [payment-method.yml](fern/api/definition/payment-method.yml).
 
 In order to make sure that the definition is valid, you can use the Fern CLI.
 
