@@ -14,12 +14,3 @@ release:
         token: ${FERN_NPM_TOKEN}
     github:
       repository: fern-primer/primer-node
-  - name: fernapi/fern-java-sdk
-    version: 0.0.121
-    publishing:
-      maven:
-        coordinate: io.github.fern-api:pimer
-        username: ${FERN_MAVEN_USERNAME}
-        password: ${FERN_MAVEN_TOKEN}
-    github:
-      repository: fern-primer/primer-java
