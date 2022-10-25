@@ -204,7 +204,7 @@ types:
         docs: The customer's national identification number
 
   MetadataDetails:
-    alias: map<string, unknown>
+    type: map<string, unknown>
     docs: A dictionary of key-value pairs where the values can only be strings or integers.
 
   ClientPaymentMethod:

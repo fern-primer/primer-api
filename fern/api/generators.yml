@@ -1,9 +1,25 @@
+draft:
+  - name: fernapi/fern-openapi
+    version: 0.0.9
+    config:
+      format: yaml
+    mode: download-files
+    output-path: ./generated-openapi
 release:
   - name: fernapi/fern-typescript-sdk
-    version: 0.0.213
+    version: 0.0.219
     publishing:
       npm:
         package-name: '@fern-api/primer'
         token: ${FERN_NPM_TOKEN}
     github:
       repository: fern-primer/primer-node
+  - name: fernapi/fern-java-sdk
+    version: 0.0.121
+    publishing:
+      maven:
+        coordinate: io.github.fern-api:pimer
+        username: ${FERN_MAVEN_USERNAME}
+        password: ${FERN_MAVEN_TOKEN}
+    github:
+      repository: fern-primer/primer-java

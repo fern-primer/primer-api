@@ -161,7 +161,7 @@ services:
 
 types:
   PaymentId:
-    alias: string
+    type: string
     docs: The unique payment ID.
 
   PaymentsData:

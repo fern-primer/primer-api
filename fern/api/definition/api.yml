@@ -4,7 +4,7 @@ auth-schemes:
   api-key:
     header: X-API-KEY
     name: apiKey
-
-# origins:
-#   - url: https://api.sandbox.primer.io
-#   - url: https://api.primer.io
+environments:
+  Sandbox: https://api.sandbox.primer.io
+  Production: https://api.primer.io
+default-environment: Production
