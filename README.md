@@ -5,6 +5,7 @@ Tagging a release on this repository will update the:
 - [TypeScript SDK Github Repo](https://github.com/fern-primer/primer-node)
 - [Java SDK Github Repo](https://github.com/fern-primer/primer-java)
 - [OpenAPI Description Github Repo](https://github.com/fern-primer/primer-openapi)
+- [Postman Collection Github Repo](https://github.com/fern-primer/primer-postman)
 - _More SDKs to come..._
 
 ## What is in this repository?
