@@ -1,6 +1,6 @@
 release:
   - name: fernapi/fern-typescript-sdk
-    version: 0.0.227-2-gd393cb4
+    version: 0.0.228
     publishing:
       npm:
         package-name: '@fern-api/primer'
