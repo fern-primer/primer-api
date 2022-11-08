@@ -1,6 +1,6 @@
 release:
   - name: fernapi/fern-typescript-sdk
-    version: 0.0.227
+    version: 0.0.227-2-gd393cb4
     publishing:
       npm:
         package-name: '@fern-api/primer'
@@ -8,7 +8,7 @@ release:
     github:
       repository: fern-primer/primer-node
   - name: fernapi/fern-java-sdk
-    version: 0.0.120
+    version: 0.0.122
     publishing:
       maven:
         coordinate: io.github.fern-api:primer
