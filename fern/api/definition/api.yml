@@ -4,6 +4,10 @@ auth-schemes:
   api-key:
     header: X-API-KEY
     name: apiKey
+headers:
+  X-API-VERSION: 
+    type: string
+    name: apiVersion
 environments:
   Sandbox: https://api.sandbox.primer.io
   Production: https://api.primer.io
