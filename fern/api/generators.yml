@@ -8,7 +8,7 @@ release:
     github:
       repository: fern-primer/primer-node
   - name: fernapi/fern-java-sdk
-    version: 0.0.123
+    version: 0.0.125
     publishing:
       maven:
         coordinate: io.github.fern-api:primer
@@ -21,7 +21,7 @@ release:
     github:
       repository: fern-primer/primer-openapi
   - name: fernapi/fern-postman
-    version: 0.0.28
+    version: 0.0.29
     publishing:
       postman:
         api-key: ${FERN_POSTMAN_API_KEY}
