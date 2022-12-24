@@ -1,4 +1,4 @@
-name: api
+name: primer-api
 auth: api-key
 auth-schemes:
   api-key:

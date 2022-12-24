@@ -1,5 +1,3 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
-
 imports:
   commons: commons.yml
   client: client-session.yml
@@ -10,7 +8,7 @@ services:
       base-path: /payments
       auth: true
       headers:
-        X-Idempotency-Key: 
+        X-Idempotency-Key:
           type: optional<string>
           name: idempotencyKey
       endpoints:
@@ -23,59 +21,68 @@ services:
             Payments will be available within a minute from being created.
           method: GET
           path: /
-          query-parameters:
-            status:
-              type: optional<string>
-              docs: Filter payments by their status. For example, "FAILED,CANCELLED”
-            payment_method_type:
-              type: optional<string>
-              docs: Filter payments by their payment method type. For example, "PAYMENT_CARD,APPLE_PAY"
-            processor:
-              type: optional<string>
-              docs: Filter payments by their payment processor. For example, "Stripe,Braintree"
-            currency_code:
-              type: optional<commons.CurrencyCode>
-              docs: Filter payments by their payment currency. For example, "USD,EUR" for US dollars and Euro
-            from_date:
-              type: optional<datetime>
-              docs: Return only payments from this date (inclusive).
-            to_date:
-              type: optional<datetime>
-              docs: Return only payments up to this date (inclusive).
-            order_id:
-              type: optional<string>
-              docs: Return payments related to this order ID.
-            min_amount:
-              type: optional<integer>
-              docs: Return payments of this amount minimum (inclusive).
-            max_amount:
-              type: optional<integer>
-              docs: Return payments of this amount max (inclusive).
-            customer_id:
-              type: optional<commons.CustomerId> 
-              docs: ID of the customer that has made the payment. For example, "anna-123,dirk-456"
-            merchant_id:
-              type: optional<commons.MerchantId>
-              docs: ID of the merchant involved in the payment.
-            customer_email_address:
-              type: optional<string> 
-              docs: Email of the customer that has made the payment. For example, "mary@gm.com,ginni@ibm.com"
-            last_4_digits:
-              type: optional<string> 
-              docs: Last 4 digits of the card used for the payment. For example, "4839,8709"
-            paypal_email:
-              type: optional<string> 
-              docs: Paypal email address associated with the payment. For example, "mary@gm.com,ginni@ibm.com"
-            klarna_email:
-              type: optional<string>
-              docs: Klarna email address associated with the payment. "mary@gm.com,ginni@ibm.com"
-            limit:
-              type: optional<integer>
-              docs: Maximum number of payments to return per page. Between 1 and 100.
-            cursor:
-              type: optional<integer>
-              docs: If results are paginated, pass the nextCursor to access next page.
           response: PaymentsData
+          request:
+            name: GetPaymentsList
+            query-parameters:
+              status:
+                type: optional<string>
+                docs: Filter payments by their status. For example, "FAILED,CANCELLED”
+              payment_method_type:
+                type: optional<string>
+                docs: Filter payments by their payment method type. For example,
+                  "PAYMENT_CARD,APPLE_PAY"
+              processor:
+                type: optional<string>
+                docs: Filter payments by their payment processor. For example,
+                  "Stripe,Braintree"
+              currency_code:
+                type: optional<commons.CurrencyCode>
+                docs: Filter payments by their payment currency. For example, "USD,EUR" for US
+                  dollars and Euro
+              from_date:
+                type: optional<datetime>
+                docs: Return only payments from this date (inclusive).
+              to_date:
+                type: optional<datetime>
+                docs: Return only payments up to this date (inclusive).
+              order_id:
+                type: optional<string>
+                docs: Return payments related to this order ID.
+              min_amount:
+                type: optional<integer>
+                docs: Return payments of this amount minimum (inclusive).
+              max_amount:
+                type: optional<integer>
+                docs: Return payments of this amount max (inclusive).
+              customer_id:
+                type: optional<commons.CustomerId>
+                docs: ID of the customer that has made the payment. For example,
+                  "anna-123,dirk-456"
+              merchant_id:
+                type: optional<commons.MerchantId>
+                docs: ID of the merchant involved in the payment.
+              customer_email_address:
+                type: optional<string>
+                docs: Email of the customer that has made the payment. For example,
+                  "mary@gm.com,ginni@ibm.com"
+              last_4_digits:
+                type: optional<string>
+                docs: Last 4 digits of the card used for the payment. For example, "4839,8709"
+              paypal_email:
+                type: optional<string>
+                docs: Paypal email address associated with the payment. For example,
+                  "mary@gm.com,ginni@ibm.com"
+              klarna_email:
+                type: optional<string>
+                docs: Klarna email address associated with the payment.
+                  "mary@gm.com,ginni@ibm.com"
+              limit:
+                type: optional<integer>
+                docs: Maximum number of payments to return per page. Between 1 and 100.
+              cursor:
+                type: optional<integer>
+                docs: If results are paginated, pass the nextCursor to access next page.
 
         create:
           docs: |
@@ -88,7 +95,47 @@ services:
             E.g. if you pass amount on this request, it will override the amount on the order associated with the Client Session.
           method: POST
           path: /
-          request: CreatePaymentRequest
+          request:
+            name: CreatePaymentRequest
+            body:
+              properties:
+                orderId:
+                  type: optional<commons.OrderId>
+                  docs: Your reference for the payment.
+                currencyCode:
+                  type: optional<commons.CurrencyCode>
+                  docs: |
+                    The 3-letter currency code in ISO 4217 format.
+                    e.g. use USD for US dollars.
+                amount:
+                  type: optional<integer>
+                  docs: The amount you would like to charge the customer, in minor units. e.g. for
+                    $7, use 700. Some currencies, such as Japanese Yen, do not
+                    have minor units. In this case you should use the value as
+                    it is, without any formatting. For example for ¥100, use
+                    100.
+                order:
+                  type: optional<client.OrderDetails>
+                  docs: More information associated with the order.
+                paymentMethodToken:
+                  type: string
+                  docs: The payment method token used to authorize the payment.
+                customerId:
+                  type: optional<commons.CustomerId>
+                  docs: A unique identifier for your customer. This attribute is required if
+                    `paymentMethod.vaultOnSuccess` is set to True.
+                customer:
+                  type: optional<client.CustomerDetails>
+                  docs: More information associated with the customer.
+                metadata:
+                  type: optional<map<string, unknown>>
+                  docs: |
+                    Additional data to be used throughout the payment lifecycle.
+                    A dictionary of key-value pairs where the values can only be strings or integers.
+                    e.g. {"productId": 1001, "merchantId": "a13bsd62s"}
+                paymentMethod:
+                  type: optional<client.ClientPaymentMethod>
+                  docs: Enable certain options associated with the payment method.
           response: PaymentResponse
 
         capture:
@@ -108,11 +155,23 @@ services:
             id:
               type: PaymentId
               docs: ID of the payment to capture.
-          request: CapturePaymentRequest
+          request:
+            name: CapturePaymentRequest
+            body:
+              properties:
+                amount:
+                  type: optional<integer>
+                  docs: The amount you would like to capture, in minor units. The currency used on
+                    authorization is assumed. If no amount is specified it
+                    defaults to the full amount.
+                final:
+                  type: optional<boolean>
+                  docs: Indicates whether the capture request is the final capture request. After
+                    a final capture, no subsequent captures are allowed.
           response: PaymentResponse
 
         cancel:
-          docs: | 
+          docs: |
             Provided the payment has not reached `SETTLED` status, Primer will
             send a "void" request to the payment processor, thereby cancelling the payment
             and releasing the hold on customer funds. Upon success, the payment will transition
@@ -123,42 +182,75 @@ services:
             id:
               type: PaymentId
               docs: ID of the payment to cancel.
-          request: CancelPaymentRequest
+          request:
+            name: CancelPaymentRequest
+            body:
+              properties:
+                reason:
+                  type: optional<string>
+                  docs: You can optionally specify a reason for the cancellation. This is for your
+                    own records.
           response: PaymentResponse
 
-        refund: 
-          docs: By default, this request will refund the full amount. Optionally, pass in a lesser amount for a partial refund.
-          method: POST 
+        refund:
+          docs: By default, this request will refund the full amount. Optionally, pass in
+            a lesser amount for a partial refund.
+          method: POST
           path: /{id}/refund
           path-parameters:
             id:
               type: PaymentId
               docs: ID of the payment to refund.
-          request: RefundPaymentRequest
+          request:
+            name: RefundPaymentRequest
+            body:
+              properties:
+                amount:
+                  type: optional<integer>
+                  docs: The amount you would like to refund the customer, in minor units. e.g. for
+                    $7, use 700. Defaults to remaining non-refunded amount.
+                orderId:
+                  type: optional<string>
+                  docs: Optionally you can pass a specific order ID for the refund. By default
+                    this will be set to the original orderId given on payment
+                    creation.
+                reason:
+                  type: optional<string>
+                  docs: You can optionally specify a reason for the refund. This is for your own
+                    records.
           response: PaymentResponse
 
-        resume: 
+        resume:
           docs: |
             Resume a payment's workflow execution from a paused state.
             This is usually required when a Workflow was paused in order to get further information
             from the customer, or when waiting for an asynchronous response from a third party connection.
-          method: POST 
+          method: POST
           path: /{id}/resume
           path-parameters:
             id:
-              type: PaymentId 
+              type: PaymentId
               docs: ID of the payment to resume.
-          request: ResumePaymentRequest
+          request:
+            name: ResumePaymentRequest
+            body:
+              properties:
+                resumeToken:
+                  type: string
+                  docs: A token containing any information that is sent back from the checkout to
+                    complete a blocked payment flow.
           response: PaymentResponse
 
-        get: 
+        get:
           docs: Retrieve a payment by its ID.
-          method: GET 
+          method: GET
           path: /{id}/resume
           path-parameters:
             id:
-              type: PaymentId 
+              type: PaymentId
               docs: ID of the payment to retrieve.
+          request:
+            name: GetPaymentRequest
           response: PaymentResponse
 
 types:
@@ -176,13 +268,19 @@ types:
     properties:
       id:
         type: PaymentId
-        docs: You can use this ID to retrieve the payment details or perform downstream operations.
+        docs: You can use this ID to retrieve the payment details or perform downstream
+          operations.
       date:
         type: datetime
         docs: The date and time at which the payment was created in UTC format.
       status:
         type: PaymentStatus
-        docs: As the payments are created, processed, and finalised, they go through a number of states that you will get as an API response, through webhook notifications, and in the Dashboard. These states are used across all processors, as processor specific states are mapped to these. An additional message, in the field processor may also be included that details the reason for the state, primarily on failure states.
+        docs: As the payments are created, processed, and finalised, they go through a
+          number of states that you will get as an API response, through webhook
+          notifications, and in the Dashboard. These states are used across all
+          processors, as processor specific states are mapped to these. An
+          additional message, in the field processor may also be included that
+          details the reason for the state, primarily on failure states.
       orderId:
         type: commons.OrderId
         docs: Your reference for the payment.
@@ -191,7 +289,8 @@ types:
         docs: The payment processor used for this payment.
       currencyCode:
         type: commons.CurrencyCode
-        docs: The 3-letter currency code in ISO 4217 format. e.g. use USD for US dollars.
+        docs: The 3-letter currency code in ISO 4217 format. e.g. use USD for US
+          dollars.
       amount:
         type: integer
         docs: The payment amount, in minor units. e.g. $7 would show as 700.
@@ -211,62 +310,37 @@ types:
       - value: AUTHORIZED
         docs: The payment is authorized and awaiting capture.
       - value: SETTLING
-        docs: The payment has been submitted for settlement and funds will be settled later.
+        docs: The payment has been submitted for settlement and funds will be settled
+          later.
       - value: PARTIALLY_SETTLED
         docs: The payment has been partially settled.
       - value: SETTLED
         docs: Funds have been settled into your account.
       - value: DECLINED
-        docs: This payment was declined by the processor, either at a gateway or acquirer level. See the `reason` object in your response payload for more details.
+        docs: This payment was declined by the processor, either at a gateway or
+          acquirer level. See the `reason` object in your response payload for
+          more details.
       - value: CANCELLED
         docs: The payment was cancelled prior to it being settled.
-
-  CreatePaymentRequest:
-    properties:
-      orderId:
-        type: optional<commons.OrderId>
-        docs: Your reference for the payment.
-      currencyCode:
-        type: optional<commons.CurrencyCode>
-        docs: |
-          The 3-letter currency code in ISO 4217 format.
-          e.g. use USD for US dollars.
-      amount:
-        type: optional<integer>
-        docs: The amount you would like to charge the customer, in minor units. e.g. for $7, use 700. Some currencies, such as Japanese Yen, do not have minor units. In this case you should use the value as it is, without any formatting. For example for ¥100, use 100.
-      order:
-        type: optional<client.OrderDetails>
-        docs: More information associated with the order.
-      paymentMethodToken:
-        type: string
-        docs: The payment method token used to authorize the payment.
-      customerId:
-        type: optional<commons.CustomerId>
-        docs: A unique identifier for your customer. This attribute is required if `paymentMethod.vaultOnSuccess` is set to True.
-      customer:
-        type: optional<client.CustomerDetails>
-        docs: More information associated with the customer.
-      metadata:
-        type: optional<map<string, unknown>>
-        docs: |
-          Additional data to be used throughout the payment lifecycle.
-          A dictionary of key-value pairs where the values can only be strings or integers.
-          e.g. {"productId": 1001, "merchantId": "a13bsd62s"}
-      paymentMethod:
-        type: optional<client.ClientPaymentMethod>
-        docs: Enable certain options associated with the payment method.
 
   PaymentResponse:
     properties:
       id:
         type: optional<PaymentId>
-        docs: Use this ID to retrieve the payment details or perform downstream operations.
+        docs: Use this ID to retrieve the payment details or perform downstream
+          operations.
       date:
         type: optional<datetime>
         docs: The date and time at which the payment was created in UTC format.
       status:
         type: optional<PaymentStatus>
-        docs: As the payments are created, processed, and finalised, they go through a number of states that you will get as an API response, through webhook notifications, and in the Dashboard. These states are used across all processors, as processor specific states are mapped to these. An additional message, in the field processorMessage, from the processor may also be included that details the reason for the state, primarily on failure states.
+        docs: As the payments are created, processed, and finalised, they go through a
+          number of states that you will get as an API response, through webhook
+          notifications, and in the Dashboard. These states are used across all
+          processors, as processor specific states are mapped to these. An
+          additional message, in the field processorMessage, from the processor
+          may also be included that details the reason for the state, primarily
+          on failure states.
       orderId:
         type: optional<commons.OrderId>
         docs: Your reference for the payment.
@@ -275,7 +349,8 @@ types:
         docs: The unique identifier for your customer.
       currencyCode:
         type: optional<commons.CurrencyCode>
-        docs: The 3-letter currency code in ISO 4217 format. e.g. use USD for US dollars.
+        docs: The 3-letter currency code in ISO 4217 format. e.g. use USD for US
+          dollars.
       amount:
         type: optional<integer>
         docs: The payment amount, in minor units. e.g. $7 would show as 700.
@@ -293,19 +368,24 @@ types:
         docs: The details of shipping charged.
       paymentMethod:
         type: PaymentMethod
-        docs: The payment method options provided in the request, as well as the token used to process the payment.
+        docs: The payment method options provided in the request, as well as the token
+          used to process the payment.
       requiredAction:
         type: optional<RequiredAction>
-        docs: Required action to perform in order to resume the payment workflow. This can be requiring a 3DS check from the customer for instance.
+        docs: Required action to perform in order to resume the payment workflow. This
+          can be requiring a 3DS check from the customer for instance.
       statusReason:
         type: optional<StatusReason>
-        docs: Check this field for more information regarding the payment's status. This is especially useful when the status is `DECLINED` or `FAILED`.
+        docs: Check this field for more information regarding the payment's status. This
+          is especially useful when the status is `DECLINED` or `FAILED`.
       transactions:
         type: list<Transaction>
-        docs: A list summarizing the transactions that occurred while processing the payment.
+        docs: A list summarizing the transactions that occurred while processing the
+          payment.
       processor:
         type: optional<Processor>
-        docs: More information associated with the payment processor, including the processor name.
+        docs: More information associated with the payment processor, including the
+          processor name.
       customer:
         type: optional<client.CustomerDetails>
         docs: More information associated with the customer.
@@ -330,19 +410,21 @@ types:
       paymentMethodData: PaymentCardTokenAPISchema
       descriptor:
         type: optional<string>
-        docs: The description of the payment, as it would typically appear on a bank statement.
+        docs: The description of the payment, as it would typically appear on a bank
+          statement.
       paymentMethodToken:
         type: optional<string>
         docs: The payment method token used to authorize the transaction.
       isVaulted:
         type: optional<boolean>
-        docs: Whether the payment method token represents a vaulted payment method and can be used for future payments.
+        docs: Whether the payment method token represents a vaulted payment method and
+          can be used for future payments.
       analyticsId:
         type: optional<string>
         docs: Unique analytics identifier corresponding to a payment method
       threeDSecureAuthentication: optional<ThreeDSecureAuthentication>
 
-  PaymentCardTokenAPISchema: 
+  PaymentCardTokenAPISchema:
     properties:
       first6Digits: optional<string>
       last4Digits: string
@@ -398,13 +480,15 @@ types:
       paymentMethodData: PayPalOrderTokenAPISchema
       descriptor:
         type: optional<string>
-        docs: The description of the payment, as it would typically appear on a bank statement.
+        docs: The description of the payment, as it would typically appear on a bank
+          statement.
       paymentMethodToken:
         type: optional<string>
         docs: The payment method token used to authorize the transaction.
       isVaulted:
         type: optional<boolean>
-        docs: Whether the payment method token represents a vaulted payment method and can be used for future payments.
+        docs: Whether the payment method token represents a vaulted payment method and
+          can be used for future payments.
       analyticsId:
         type: optional<string>
         docs: Unique analytics identifier corresponding to a payment method
@@ -428,13 +512,15 @@ types:
       paymentMethodData: PayPalBillingAgreementAPISchema
       descriptor:
         type: optional<string>
-        docs: The description of the payment, as it would typically appear on a bank statement.
+        docs: The description of the payment, as it would typically appear on a bank
+          statement.
       paymentMethodToken:
         type: optional<string>
         docs: The payment method token used to authorize the transaction.
       isVaulted:
         type: optional<boolean>
-        docs: Whether the payment method token represents a vaulted payment method and can be used for future payments.
+        docs: Whether the payment method token represents a vaulted payment method and
+          can be used for future payments.
       analyticsId:
         type: optional<string>
         docs: Unique analytics identifier corresponding to a payment method
@@ -456,13 +542,15 @@ types:
       paymentMethodData: GoCardlessMandateAPISchema
       descriptor:
         type: optional<string>
-        docs: The description of the payment, as it would typically appear on a bank statement.
+        docs: The description of the payment, as it would typically appear on a bank
+          statement.
       paymentMethodToken:
         type: optional<string>
         docs: The payment method token used to authorize the transaction.
       isVaulted:
         type: optional<boolean>
-        docs: Whether the payment method token represents a vaulted payment method and can be used for future payments.
+        docs: Whether the payment method token represents a vaulted payment method and
+          can be used for future payments.
       analyticsId:
         type: optional<string>
         docs: Unique analytics identifier corresponding to a payment method
@@ -479,13 +567,15 @@ types:
       paymentMethodData: KlarnaPaymentSessionAPISchema
       descriptor:
         type: optional<string>
-        docs: The description of the payment, as it would typically appear on a bank statement.
+        docs: The description of the payment, as it would typically appear on a bank
+          statement.
       paymentMethodToken:
         type: optional<string>
         docs: The payment method token used to authorize the transaction.
       isVaulted:
         type: optional<boolean>
-        docs: Whether the payment method token represents a vaulted payment method and can be used for future payments.
+        docs: Whether the payment method token represents a vaulted payment method and
+          can be used for future payments.
       analyticsId:
         type: optional<string>
         docs: Unique analytics identifier corresponding to a payment method
@@ -534,13 +624,15 @@ types:
       paymentMethodData: KlarnaCustomerTokenAPISchema
       descriptor:
         type: optional<string>
-        docs: The description of the payment, as it would typically appear on a bank statement.
+        docs: The description of the payment, as it would typically appear on a bank
+          statement.
       paymentMethodToken:
         type: optional<string>
         docs: The payment method token used to authorize the transaction.
       isVaulted:
         type: optional<boolean>
-        docs: Whether the payment method token represents a vaulted payment method and can be used for future payments.
+        docs: Whether the payment method token represents a vaulted payment method and
+          can be used for future payments.
       analyticsId:
         type: optional<string>
         docs: Unique analytics identifier corresponding to a payment method
@@ -556,13 +648,15 @@ types:
       paymentMethodData: KlarnaCustomerTokenAPISchema
       descriptor:
         type: optional<string>
-        docs: The description of the payment, as it would typically appear on a bank statement.
+        docs: The description of the payment, as it would typically appear on a bank
+          statement.
       paymentMethodToken:
         type: optional<string>
         docs: The payment method token used to authorize the transaction.
       isVaulted:
         type: optional<boolean>
-        docs: Whether the payment method token represents a vaulted payment method and can be used for future payments.
+        docs: Whether the payment method token represents a vaulted payment method and
+          can be used for future payments.
       analyticsId:
         type: optional<string>
         docs: Unique analytics identifier corresponding to a payment method
@@ -577,13 +671,15 @@ types:
       paymentMethodData: KlarnaCustomerTokenAPISchema
       descriptor:
         type: optional<string>
-        docs: The description of the payment, as it would typically appear on a bank statement.
+        docs: The description of the payment, as it would typically appear on a bank
+          statement.
       paymentMethodToken:
         type: optional<string>
         docs: The payment method token used to authorize the transaction.
       isVaulted:
         type: optional<boolean>
-        docs: Whether the payment method token represents a vaulted payment method and can be used for future payments.
+        docs: Whether the payment method token represents a vaulted payment method and
+          can be used for future payments.
       analyticsId:
         type: optional<string>
         docs: Unique analytics identifier corresponding to a payment method
@@ -692,21 +788,26 @@ types:
         docs: Human description of the required action to perform.
       clientToken:
         type: optional<string>
-        docs: If the action requires customer data, instantiate the checkout SDK with this client session token to resume the session.
+        docs: If the action requires customer data, instantiate the checkout SDK with
+          this client session token to resume the session.
 
   StatusReason:
-    docs: Check this field for more information regarding the payment's status. This is especially useful when the status is `DECLINED` or `FAILED`.
+    docs: Check this field for more information regarding the payment's status. This
+      is especially useful when the status is `DECLINED` or `FAILED`.
     properties:
       type: StatusReasonType
       declineType:
         type: optional<StatusReasonDeclineType>
-        docs: If the error is of type `ISSUER_DECLINED` this will be returned. Declines of type `SOFT_DECLINE` may be retried, whereas declines of type `HARD_DECLINE` should not be retried.
+        docs: If the error is of type `ISSUER_DECLINED` this will be returned. Declines
+          of type `SOFT_DECLINE` may be retried, whereas declines of type
+          `HARD_DECLINE` should not be retried.
       code:
         type: optional<StatusReasonCode>
         docs: If the error is of type `ISSUER_DECLINED`, this will be returned.
       message:
         type: optional<string>
-        docs: In case of an error on the processor's part, we will return the message returned by the processor. This is usually a human readable error.
+        docs: In case of an error on the processor's part, we will return the message
+          returned by the processor. This is usually a human readable error.
 
   StatusReasonType:
     enum:
@@ -744,7 +845,8 @@ types:
         docs: Transaction amount in minor units
       currencyCode:
         type: commons.CurrencyCode
-        docs: The 3-letter currency code in ISO 4217 format. e.g. use USD for US dollars.
+        docs: The 3-letter currency code in ISO 4217 format. e.g. use USD for US
+          dollars.
       type: optional<TransactionType>
       processorTransactionId:
         type: optional<string>
@@ -761,7 +863,8 @@ types:
             * Stripe: Account ID"
       processorStatus: optional<PaymentStatus>
       processorStatusReason:
-        docs: If the transaction has a declined or failed status. Only if the status is `DECLINED` or `FAILED`, otherwise null.
+        docs: If the transaction has a declined or failed status. Only if the status is
+          `DECLINED` or `FAILED`, otherwise null.
         type: optional<PaymentProcessorError>
 
   TransactionType:
@@ -776,43 +879,13 @@ types:
         docs: Type of the status.
       declineType:
         type: optional<StatusReasonDeclineType>
-        docs: If the error is of type `ISSUER_DECLINED` this will be returned. Declines of type `SOFT_DECLINE` may be retried, whereas declines of type `HARD_DECLINE` should not be retried.
+        docs: If the error is of type `ISSUER_DECLINED` this will be returned. Declines
+          of type `SOFT_DECLINE` may be retried, whereas declines of type
+          `HARD_DECLINE` should not be retried.
       code:
         type: optional<StatusReasonCode>
         docs: If the error is of type `ISSUER_DECLINED`, this will be returned.
       message:
         type: optional<string>
-        docs: In case of an error on the processor's part, we will return the message returned by the processor. This is usually a human readable error.
-
-  CapturePaymentRequest:
-    properties:
-      amount:
-        type: optional<integer>
-        docs: The amount you would like to capture, in minor units. The currency used on authorization is assumed. If no amount is specified it defaults to the full amount.
-      final:
-        type: optional<boolean>
-        docs: Indicates whether the capture request is the final capture request. After a final capture, no subsequent captures are allowed.
-
-  CancelPaymentRequest: 
-    properties:
-      reason: 
-        type: optional<string>
-        docs: You can optionally specify a reason for the cancellation. This is for your own records.
-
-  RefundPaymentRequest: 
-    properties:
-      amount: 
-        type: optional<integer>
-        docs: The amount you would like to refund the customer, in minor units. e.g. for $7, use 700. Defaults to remaining non-refunded amount.
-      orderId: 
-        type: optional<string>
-        docs: Optionally you can pass a specific order ID for the refund. By default this will be set to the original orderId given on payment creation.
-      reason: 
-        type: optional<string>
-        docs: You can optionally specify a reason for the refund. This is for your own records.
-
-  ResumePaymentRequest: 
-    properties:
-      resumeToken: 
-        type: string 
-        docs: A token containing any information that is sent back from the checkout to complete a blocked payment flow.
+        docs: In case of an error on the processor's part, we will return the message
+          returned by the processor. This is usually a human readable error.
