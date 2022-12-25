@@ -1,4 +1,4 @@
-name: api
+name: primer-api
 auth: api-key
 auth-schemes:
   api-key:
@@ -12,3 +12,5 @@ environments:
   Sandbox: https://api.sandbox.primer.io
   Production: https://api.primer.io
 default-environment: Production
+error-discrimination:
+  strategy: status-code
