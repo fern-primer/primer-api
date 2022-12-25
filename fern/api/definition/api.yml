@@ -12,3 +12,5 @@ environments:
   Sandbox: https://api.sandbox.primer.io
   Production: https://api.primer.io
 default-environment: Production
+error-discrimination:
+  strategy: status-code
