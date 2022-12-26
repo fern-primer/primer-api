@@ -9,15 +9,15 @@ groups:
           token: ${FERN_NPM_TOKEN}
         github:
           repository: fern-primer/primer-node
-      # - name: fernapi/fern-java-sdk
-      #   version: 0.0.125
-      #   output:
-      #     location: maven
-      #     coordinate: io.github.fern-api:primer
-      #     username: ${FERN_MAVEN_USERNAME}
-      #     password: ${FERN_MAVEN_TOKEN}
-      #   github:
-      #     repository: fern-primer/primer-java
+      - name: fernapi/fern-java-sdk
+        version: 0.0.132
+        output:
+          location: maven
+          coordinate: io.github.fern-api:primer
+          username: ${FERN_MAVEN_USERNAME}
+          password: ${FERN_MAVEN_TOKEN}
+        github:
+          repository: fern-primer/primer-java
       - name: fernapi/fern-openapi
         version: 0.0.14-3-gd8ea700
         github:
