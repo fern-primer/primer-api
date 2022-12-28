@@ -36,6 +36,9 @@ services:
                   type: optional<boolean>
                   docs: Whether the payment method should be verified before vaulting or not
           response: PaymentMethodToken
+          errors: 
+            - commons.FailedVerificationError
+            - commons.RequestValidationError
           examples:
             - path-parameters:
                 paymentMethodToken: _xlXlmBcTnuFxc2N3HAI73wxNjE1NTU5ODY5
@@ -61,6 +64,36 @@ services:
                   description: My first card
                   deleted: false
                   default: true
+            - path-parameters:
+                paymentMethodToken: _xlXlmBcTnuFxc2N3HAI73wxNjE1NTU5ODY5
+              request:
+                customerId: customer_123
+                verify: false
+              response:
+                error: commons.FailedVerificationError
+                body:
+                  errorId: FailedVerification
+                  description: Payment method could not be verified
+                  diagnosticsId: '1234567898'
+            - path-parameters:
+                paymentMethodToken: _xlXlmBcTnuFxc2N3HAI73wxNjE1NTU5ODY5
+              request:
+                customerId: customer_123
+                verify: false
+              response:
+                error: commons.RequestValidationError
+                body:
+                  error:
+                    errorId: RequestValidationError
+                    description: >-
+                      We were unable to validate your request, please check your payload against
+                      https://primer.io/docs/api
+                    diagnosticsId: '1234567898'
+                    validationErrors:
+                      - model: VaultPaymentInstrumentAPIRequest
+                        errors:
+                          - path: string
+                            description: Ensure this value has at least 1 characters
 
         list:
           docs: Retrieve a list of stored payment methods for a customer.
@@ -96,7 +129,6 @@ services:
           response: PaymentMethodToken
 
 types:
-
   ListPaymentMethodsResponse:
     properties:
       data: list<PaymentMethodToken>

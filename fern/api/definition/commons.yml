@@ -557,6 +557,31 @@ types:
         type: diagnosticsId
         docs: An ID that you can quote when contacting the support team
           (support@primer.io).
-      validationErrors:
-        type: unknown
-        docs: Returned in case of a badly formed request
+
+  FailedVerificationErrorBody: 
+    extends: BaseErrorBody
+
+  RequestValidationErrorBody: 
+    extends: BaseErrorBody
+    properties:
+      validationErrors: list<ValidationError>
+  
+  ValidationError: 
+    extends: BaseErrorBody
+    properties:
+      model: string 
+      errors: list<ValidationModelError>
+
+  ValidationModelError: 
+    properties:
+      path: string
+      description: string
+
+errors:
+  ValidationError:
+    status-code: 400
+    type: ValidationErrorBody
+
+  RequestValidationError:
+    status-code: 422
+    type: RequestValidationErrorBody

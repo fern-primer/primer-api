@@ -62,8 +62,8 @@ services:
                   docs: Enable certain options associated with the payment method.
           response: ClientSession
           errors:
-            - ClientSessionValidationError
-            - RequestValidationError
+            - commons.FailedValidationError
+            - commons.RequestValidationError
           examples:
             - request:
                 order:
@@ -151,7 +151,7 @@ services:
                 customerId: customer-123
 
               response:
-                error: ClientSessionValidationError
+                error: commons.FailedValidationError
                 body:
                   errorId: ClientSessionValidationError
                   description: The client token is invalid.
@@ -194,7 +194,7 @@ services:
                     amount: 300
                 customerId: customer-123
               response:
-                error: RequestValidationError
+                error: commons.RequestValidationError
                 body:
                   errorId: RequestValidationError
                   description: >-
@@ -512,18 +512,3 @@ types:
       message:
         type: optional<string>
         docs: More information as to the reason for the warning
-
-  RequestValidationErrorBody:
-    extends: commons.BaseErrorBody
-
-  ClientSessionValidationErrorBody:
-    extends: commons.BaseErrorBody
-
-errors:
-  ClientSessionValidationError:
-    status-code: 400
-    type: ClientSessionValidationErrorBody
-
-  RequestValidationError:
-    status-code: 422
-    type: RequestValidationErrorBody
