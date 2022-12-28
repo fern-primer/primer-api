@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
 imports:
   commons: commons.yml
   payments: payments.yml
@@ -34,6 +36,31 @@ services:
                   type: optional<boolean>
                   docs: Whether the payment method should be verified before vaulting or not
           response: PaymentMethodToken
+          examples:
+            - path-parameters:
+                paymentMethodToken: _xlXlmBcTnuFxc2N3HAI73wxNjE1NTU5ODY5
+              request:
+                customerId: customer_123
+                verify: false
+              response:
+                body:
+                  createdAt: '2021-03-01T12:00:00.123456'
+                  token: _xlXlmBcTnuFxc2N3HAI73wxNjE1NTU5ODY5
+                  tokenType: MULTI_USE
+                  analyticsId: vuXhpZouWxaZpRZ-x_brZmtT
+                  paymentMethodType: PAYMENT_CARD
+                  payment_method_data:
+                    last4Digits: '1111'
+                    expirationMonth: '12'
+                    expirationYear: '2030'
+                    cardholderName: John Biggins
+                    network: Visa
+                    networkTransactionId: "20210628190752"
+                    accountFundingType: DEBIT
+                  customerId: customer-123
+                  description: My first card
+                  deleted: false
+                  default: true
 
         list:
           docs: Retrieve a list of stored payment methods for a customer.
@@ -69,7 +96,7 @@ services:
           response: PaymentMethodToken
 
 types:
-  
+
   ListPaymentMethodsResponse:
     properties:
       data: list<PaymentMethodToken>
@@ -85,7 +112,7 @@ types:
 
   PaymentCardTokenSchemaPaymentMethodsAPI:
     properties:
-      paymentMethodData: PaymentCardTokenAPISchemaPaymentMethodsAPI
+      payment_method_data: PaymentCardTokenAPISchemaPaymentMethodsAPI
       createdAt:
         type: optional<datetime>
         docs: Creation date & time of the object (UTC)

@@ -4,8 +4,8 @@ types:
   MerchantId: string
   CustomerId: string
   OrderId: string
-  ErrorId: string 
-  diagnosticsId: string 
+  ErrorId: string
+  diagnosticsId: string
 
   BillingAddress:
     properties:
@@ -544,18 +544,19 @@ types:
       - CHARGE
       - DEFERRED_DEBIT
       - UNKNOWN
-  
+
   BaseErrorBody:
     properties:
-      errorId: 
-        type: ErrorId 
+      errorId:
+        type: ErrorId
         docs: An error ID
       description:
-        type: string 
+        type: string
         docs: A human description of the error
-      diagnosticsId: 
+      diagnosticsId:
         type: diagnosticsId
-        docs: An ID that you can quote when contacting the support team (support@primer.io). 
-      validationErrors: 
-        type: unknown 
+        docs: An ID that you can quote when contacting the support team
+          (support@primer.io).
+      validationErrors:
+        type: unknown
         docs: Returned in case of a badly formed request

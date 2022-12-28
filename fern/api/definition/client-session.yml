@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
 imports:
   commons: commons.yml
 
@@ -59,7 +61,7 @@ services:
                   type: optional<ClientPaymentMethod>
                   docs: Enable certain options associated with the payment method.
           response: ClientSession
-          errors: 
+          errors:
             - ClientSessionValidationError
             - RequestValidationError
           examples:
@@ -91,8 +93,8 @@ services:
                 currencyCode: GBP
                 amount: 1000
                 customerId: customer-123
-              response: 
-                body: 
+              response:
+                body:
                   clientToken: client-session-token
                   clientExpirationDate: '2019-08-24T14:15:22Z'
                   customerId: customer-123
@@ -146,65 +148,65 @@ services:
                 orderId: order-abc
                 currencyCode: GBP
                 amount: 1000
-                customerId: customer-123 
+                customerId: customer-123
 
-              response: 
+              response:
                 error: ClientSessionValidationError
-                body: 
+                body:
                   errorId: ClientSessionValidationError
                   description: The client token is invalid.
                   diagnosticsId: '1234567898'
-                  validationErrors: 
+                  validationErrors:
                     validationErrors:
-                    - model: ClientSessionAPIRequest
-                      errors:
-                        - path: $.customerId
-                          description: Value must be a valid string
+                      - model: ClientSessionAPIRequest
+                        errors:
+                          - path: customer-123
+                            description: Value must be a valid string
 
-            - request: 
+            - request:
                 orderId: order_00123
-                currencyCode: USD 
+                currencyCode: USD
                 amount: 1900
-                order: 
-                  lineItems: 
+                order:
+                  lineItems:
                     - itemId: sku-001
-                      name: My first item 
-                      description: The first item I've created. 
+                      name: My first item
+                      description: The first item I've created.
                       amount: 700
                       quantity: 2
-                      discountAmount: 10 
+                      discountAmount: 10
                       taxAmount: 7
-                      productType: DIGITAL 
-                      productData: 
+                      productType: DIGITAL
+                      productData:
                         sku: sku-001
-                        brand: MyBrand 
-                        color: Grey 
-                        globalTradeItemNumber: 
-                        manufacturerPartNumber: 
+                        brand: MyBrand
+                        color: Grey
+                        globalTradeItemNumber:
+                        manufacturerPartNumber:
                         weight: 70
-                        weightUnit: kg 
-                  countryCode: DE 
+                        weightUnit: kg
+                  countryCode: DE
                   fees:
-                    - amount: 700 
-                      type: conversion  
+                    - amount: 700
+                      type: conversion
                       description: Currency conversion fee
-                  shipping: 
+                  shipping:
                     amount: 300
-                customerId: customer-123 
-              response: 
+                customerId: customer-123
+              response:
                 error: RequestValidationError
-                body: 
+                body:
                   errorId: RequestValidationError
                   description: >-
-                    We were unable to validate your request, please check your payload against
-                    https://primer.io/docs/api
+                    We were unable to validate your request, please check your payload
+                    against https://primer.io/docs/api
                   diagnosticsId: '1234567898'
                   validationErrors:
                     - model: RequestValidationError
                       errors:
-                        - path: $.customerId
+                        - path: customer-123
                           description: Value must be a valid string
-                
+
         get:
           docs: Retrieve a client session. This API call retrieves all the details
             associated with the client session corresponding to the client token
@@ -275,7 +277,7 @@ services:
           response: ClientSession
 
 types:
-  
+
   OrderDetails:
     properties:
       lineItems:
@@ -511,13 +513,13 @@ types:
         type: optional<string>
         docs: More information as to the reason for the warning
 
-  RequestValidationErrorBody: 
+  RequestValidationErrorBody:
     extends: commons.BaseErrorBody
 
   ClientSessionValidationErrorBody:
-    extends: commons.BaseErrorBody 
+    extends: commons.BaseErrorBody
 
-errors: 
+errors:
   ClientSessionValidationError:
     status-code: 400
     type: ClientSessionValidationErrorBody
