@@ -5,7 +5,7 @@ types:
   CustomerId: string
   OrderId: string
   ErrorId: string
-  diagnosticsId: string
+  DiagnosticsId: string
 
   BillingAddress:
     properties:
@@ -554,7 +554,7 @@ types:
         type: string
         docs: A human description of the error
       diagnosticsId:
-        type: diagnosticsId
+        type: DiagnosticsId
         docs: | 
           An ID that you can quote when contacting the support team
           (support@primer.io).
