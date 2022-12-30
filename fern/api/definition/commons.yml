@@ -555,7 +555,8 @@ types:
         docs: A human description of the error
       diagnosticsId:
         type: diagnosticsId
-        docs: An ID that you can quote when contacting the support team
+        docs: | 
+          An ID that you can quote when contacting the support team
           (support@primer.io).
 
   FailedVerificationErrorBody: 
@@ -564,24 +565,33 @@ types:
   RequestValidationErrorBody: 
     extends: BaseErrorBody
     properties:
-      validationErrors: list<ValidationError>
-  
-  ValidationError: 
-    extends: BaseErrorBody
-    properties:
-      model: string 
-      errors: list<ValidationModelError>
+      validationErrors: 
+        type: unknown
+        docs: Returned in case of a badly formed request
 
   ValidationModelError: 
     properties:
       path: string
       description: string
 
+  ClientSessionValidationErrorBody: 
+    extends: BaseErrorBody
+    properties:
+      recoverySuggestion: string
+
 errors:
-  ValidationError:
-    status-code: 400
-    type: ValidationErrorBody
+  # ValidationError:
+  #   status-code: 400
+  #   type: ValidationErrorBody
 
   RequestValidationError:
     status-code: 422
     type: RequestValidationErrorBody
+
+  ClientSessionValidationError: 
+    status-code: 400
+    type: ClientSessionValidationErrorBody
+  
+  FailedVerificationError: 
+    status-code: 400
+    type: FailedVerificationErrorBody
