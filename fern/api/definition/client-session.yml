@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
 imports:
   commons: commons.yml
 
@@ -59,154 +61,150 @@ services:
                   type: optional<ClientPaymentMethod>
                   docs: Enable certain options associated with the payment method.
           response: ClientSession
-          errors: 
-            - ClientSessionValidationError
-            - RequestValidationError
-          examples:
-            - request:
-                order:
-                  lineItems:
-                    - itemId: shoe-123
-                      description: Blue Shoe
-                      amount: 100
-                      quantity: 10
-                  countryCode: FR
-                customer:
-                  emailAddress: john@primer.io
-                metadata:
-                  productType: Shoes
-                paymentMethod:
-                  options:
-                    PAYMENT_CARD:
-                      networks:
-                        VISA:
-                          surcharge:
-                            amount: 10
-                    GOOGLE_PAY:
-                      surcharge:
-                        amount: 20
-                  descriptor: 'Purchase: Shoes'
-                  vaultOnSuccess: true
-                orderId: order-abc
-                currencyCode: GBP
-                amount: 1000
-                customerId: customer-123
-              response: 
-                body: 
-                  clientToken: client-session-token
-                  clientExpirationDate: '2019-08-24T14:15:22Z'
-                  customerId: customer-123
-                  orderId: order-abc
-                  currencyCode: GBP
-                  metadata:
-                    productType: Shoe
-                  customer:
-                    emailAddress: john@primer.io
-                  amount: 20
-                  order:
-                    countryCode: FR
-                    fees:
-                      - type: SURCHARGE
-                        amount: 20
-                  paymentMethod:
-                    vaultOnSuccess: true
-                    options:
-                      PAYMENT_CARD:
-                        networks:
-                          VISA:
-                            surcharge:
-                              amount: 10
-                      GOOGLE_PAY:
-                        surcharge:
-                          amount: 20
-            - request:
-                order:
-                  lineItems:
-                    - itemId: shoe-123
-                      description: Blue Shoe
-                      amount: 100
-                      quantity: 10
-                  countryCode: FR
-                customer:
-                  emailAddress: john@primer.io
-                metadata:
-                  productType: Shoes
-                paymentMethod:
-                  options:
-                    PAYMENT_CARD:
-                      networks:
-                        VISA:
-                          surcharge:
-                            amount: 10
-                    GOOGLE_PAY:
-                      surcharge:
-                        amount: 20
-                  descriptor: 'Purchase: Shoes'
-                  vaultOnSuccess: true
-                orderId: order-abc
-                currencyCode: GBP
-                amount: 1000
-                customerId: customer-123 
-
-              response: 
-                error: ClientSessionValidationError
-                body: 
-                  errorId: ClientSessionValidationError
-                  description: The client token is invalid.
-                  diagnosticsId: '1234567898'
-                  validationErrors: 
-                    validationErrors:
-                    - model: ClientSessionAPIRequest
-                      errors:
-                        - path: $.customerId
-                          description: Value must be a valid string
-
-            - request: 
-                orderId: order_00123
-                currencyCode: USD 
-                amount: 1900
-                order: 
-                  lineItems: 
-                    - itemId: sku-001
-                      name: My first item 
-                      description: The first item I've created. 
-                      amount: 700
-                      quantity: 2
-                      discountAmount: 10 
-                      taxAmount: 7
-                      productType: DIGITAL 
-                      productData: 
-                        sku: sku-001
-                        brand: MyBrand 
-                        color: Grey 
-                        globalTradeItemNumber: 
-                        manufacturerPartNumber: 
-                        weight: 70
-                        weightUnit: kg 
-                  countryCode: DE 
-                  fees:
-                    - amount: 700 
-                      type: conversion  
-                      description: Currency conversion fee
-                  shipping: 
-                    amount: 300
-                customerId: customer-123 
-              response: 
-                error: RequestValidationError
-                body: 
-                  errorId: RequestValidationError
-                  description: >-
-                    We were unable to validate your request, please check your payload against
-                    https://primer.io/docs/api
-                  diagnosticsId: '1234567898'
-                  validationErrors:
-                    - model: RequestValidationError
-                      errors:
-                        - path: $.customerId
-                          description: Value must be a valid string
-                
+          errors:
+            - commons.ClientSessionValidationError
+            - commons.RequestValidationError
+          # examples:
+          #   - request:
+          #       order:
+          #         lineItems:
+          #           - itemId: shoe-123
+          #             description: Blue Shoe
+          #             amount: 100
+          #             quantity: 10
+          #         countryCode: FR
+          #       customer:
+          #         emailAddress: john@primer.io
+          #       metadata:
+          #         productType: Shoes
+          #       paymentMethod:
+          #         options:
+          #           PAYMENT_CARD:
+          #             networks:
+          #               VISA:
+          #                 surcharge:
+          #                   amount: 10
+          #           GOOGLE_PAY:
+          #             surcharge:
+          #               amount: 20
+          #         descriptor: 'Purchase: Shoes'
+          #         vaultOnSuccess: true
+          #       orderId: order-abc
+          #       currencyCode: GBP
+          #       amount: 1000
+          #       customerId: customer-123
+          #     response:
+          #       body:
+          #         clientToken: client-session-token
+          #         clientExpirationDate: '2019-08-24T14:15:22Z'
+          #         customerId: customer-123
+          #         orderId: order-abc
+          #         currencyCode: GBP
+          #         metadata:
+          #           productType: Shoe
+          #         customer:
+          #           emailAddress: john@primer.io
+          #         amount: 20
+          #         order:
+          #           countryCode: FR
+          #           fees:
+          #             - type: SURCHARGE
+          #               amount: 20
+          #         paymentMethod:
+          #           vaultOnSuccess: true
+          #           options:
+          #             PAYMENT_CARD:
+          #               networks:
+          #                 VISA:
+          #                   surcharge:
+          #                     amount: 10
+          #             GOOGLE_PAY:
+          #               surcharge:
+          #                 amount: 20
+          #   # error - ClientSessionValidationError
+          #   - request:
+          #       order:
+          #         lineItems:
+          #           - itemId: shoe-123
+          #             description: Blue Shoe
+          #             amount: 100
+          #             quantity: 10
+          #         countryCode: FR
+          #       customer:
+          #         emailAddress: john@primer.io
+          #       metadata:
+          #         productType: Shoes
+          #       paymentMethod:
+          #         options:
+          #           PAYMENT_CARD:
+          #             networks:
+          #               VISA:
+          #                 surcharge:
+          #                   amount: 10
+          #           GOOGLE_PAY:
+          #             surcharge:
+          #               amount: 20
+          #         descriptor: 'Purchase: Shoes'
+          #         vaultOnSuccess: true
+          #       orderId: order-abc
+          #       currencyCode: GBP
+          #       amount: 1000
+          #       customerId: customer-123
+          #     response:
+          #       error: commons.ClientSessionValidationError
+          #       body:
+          #         errorId: ClientSessionValidationError
+          #         description: The client token is invalid.
+          #         diagnosticsId: '1234567898'
+          #         recoverySuggestion: "Please provide a valid client token."
+          #   # error - RequestValidationError
+          #   - request:
+          #       orderId: order_00123
+          #       currencyCode: USD
+          #       amount: 1900
+          #       order:
+          #         lineItems:
+          #           - itemId: sku-001
+          #             name: My first item
+          #             description: The first item I've created.
+          #             amount: 700
+          #             quantity: 2
+          #             discountAmount: 10
+          #             taxAmount: 7
+          #             productType: DIGITAL
+          #             productData:
+          #               sku: sku-001
+          #               brand: MyBrand
+          #               color: Grey
+          #               globalTradeItemNumber:
+          #               manufacturerPartNumber:
+          #               weight: 70
+          #               weightUnit: kg
+          #         countryCode: DE
+          #         fees:
+          #           - amount: 700
+          #             type: conversion
+          #             description: Currency conversion fee
+          #         shipping:
+          #           amount: 300
+          #       customerId: customer-123
+          #     response:
+          #       error: commons.RequestValidationError
+          #       body:
+          #         errorId: RequestValidationError
+          #         description: >-
+          #           We were unable to validate your request, please check your payload
+          #           against https://primer.io/docs/api
+          #         diagnosticsId: '1234567898'
+          #         validationErrors:
+          #           - model: ClientSessionAPIRequest
+          #             errors:
+          #               - path: $.customerId
+          #                 description: Value must be a valid string
+  
         get:
-          docs: Retrieve a client session. This API call retrieves all the details
+          docs: | 
+            Retrieve a client session. This endpoint retrieves the details
             associated with the client session corresponding to the client token
             that is provided in the request. The fields with empty values are
             excluded from the response.
@@ -219,6 +217,61 @@ services:
               clientToken:
                 type: string
                 docs: Client token corresponding to the client session to retrieve
+          errors: 
+            - commons.ClientSessionValidationError
+            - commons.RequestValidationError
+          # examples: 
+          #   # success
+          #   - response:
+          #       body:
+          #         clientToken: client-session-token
+          #         clientExpirationDate: '2019-08-24T14:15:22Z'
+          #         customerId: customer-123
+          #         orderId: order-abc
+          #         currencyCode: GBP
+          #         metadata:
+          #           productType: Shoe
+          #         customer:
+          #           emailAddress: john@primer.io
+          #         amount: 20
+          #         order:
+          #           countryCode: FR
+          #           fees:
+          #             - type: SURCHARGE
+          #               amount: 20
+          #         paymentMethod:
+          #           vaultOnSuccess: true
+          #           options:
+          #             PAYMENT_CARD:
+          #               networks:
+          #                 VISA:
+          #                   surcharge:
+          #                     amount: 10
+          #             GOOGLE_PAY:
+          #               surcharge:
+          #                 amount: 20
+          #   # error - ClientSessionValidationError
+          #   - response:
+          #       error: commons.ClientSessionValidationError
+          #       body:
+          #         errorId: ClientSessionValidationError
+          #         description: The client token is invalid.
+          #         diagnosticsId: '1234567898'
+          #         recoverySuggestion: "Please provide a valid client token."
+          #   # error - RequestValidationError
+          #   - response:
+          #       error: commons.RequestValidationError
+          #       body:
+          #         errorId: RequestValidationError
+          #         description: >-
+          #           We were unable to validate your request, please check your payload
+          #           against https://primer.io/docs/api
+          #         diagnosticsId: '1234567898'
+          #         validationErrors:
+          #           - model: ClientSessionAPIRequest
+          #             errors:
+          #               - path: $.customerId
+          #                 description: Value must be a valid string
 
         update:
           docs: |
@@ -237,45 +290,107 @@ services:
               properties:
                 clientToken:
                   type: optional<string>
-                  docs: Client token for use in the Primer-JS SDK obtained via POST
+                  docs: | 
+                    Client token for use in the Primer-JS SDK obtained via `POST`
                     /client-session API call.
-                # customerId:
-                #   type: optional<commons.CustomerId>
-                #   docs: |
-                #     A unique identifier for your customer.
-                #     Create a client session token with a customerId to enable the client-side SDK to retrieve and manage your customer's saved payment methods. A client session token also enables saving payment methods against this customer id.
+                customerId:
+                  type: optional<commons.CustomerId>
+                  docs: |
+                    Your reference for the order.
                 orderId:
                   type: optional<commons.OrderId>
                   docs: Your reference for the payment.
                 currencyCode:
                   type: optional<commons.CurrencyCode>
                   docs: |
-                    The 3-letter currency code in ISO 4217 format.
-                    e.g. use USD for US dollars.
+                    The 3-letter currency code in [ISO 4217 format](https://en.wikipedia.org/wiki/ISO_4217#Active_codes).
+                    e.g. use `USD` for US dollars.
                 amount:
                   type: optional<integer>
-                  docs: The amount you would like to charge the customer, in minor units. e.g. for
-                    $7, use 700.
+                  docs: | 
+                    The amount you would like to charge the customer, in minor units. 
+                    e.g. for $7, use `700`.
+                    Some currencies, such as Japanese Yen, do not have minor units. 
+                    In this case you should use the value as it is, without any formatting. 
+                    For example for ¥100, use `100`.
+                    If the amount is provided on this level, it would override any amount calculated from 
+                    the provided line items, shipping and other amounts.
                 order:
                   type: optional<OrderDetails>
                   docs: More information associated with the order.
                 customer:
                   type: optional<CustomerDetails>
-                  docs: More information associated with the customer.
+                  docs: | 
+                    Each of the fields in this object must be updated in its entirety, 
+                    i.e. provide the entire object to update it. 
+                    Anything provided previously will be overwritten.
                 metadata:
                   type: optional<MetadataDetails>
                   docs: |
                     Additional data to be used throughout the payment lifecycle.
-                    A dictionary of key-value pairs where the values can only be strings or
-                    integers.
-                    e.g. {"productId": 1001, "merchantId": "a13bsd62s"}
+                    Provide the entire object to update it. Anything provided previously will be overwritten.
                 paymentMethod:
                   type: optional<ClientPaymentMethod>
                   docs: Enable certain options associated with the payment method.
           response: ClientSession
+          errors: 
+            - commons.ClientSessionValidationError
+            - commons.RequestValidationError
+          # examples: 
+          #   # success
+          #   - response:
+          #       body:
+          #         clientToken: client-session-token
+          #         clientExpirationDate: '2019-08-24T14:15:22Z'
+          #         customerId: customer-123
+          #         orderId: order-abc
+          #         currencyCode: GBP
+          #         metadata:
+          #           productType: Shoe
+          #         customer:
+          #           emailAddress: john@primer.io
+          #         amount: 20
+          #         order:
+          #           countryCode: FR
+          #           fees:
+          #             - type: SURCHARGE
+          #               amount: 20
+          #         paymentMethod:
+          #           vaultOnSuccess: true
+          #           options:
+          #             PAYMENT_CARD:
+          #               networks:
+          #                 VISA:
+          #                   surcharge:
+          #                     amount: 10
+          #             GOOGLE_PAY:
+          #               surcharge:
+          #                 amount: 20
+          #   # error - ClientSessionValidationError
+          #   - response:
+          #       error: commons.ClientSessionValidationError
+          #       body:
+          #         errorId: ClientSessionValidationError
+          #         description: The client token is invalid.
+          #         diagnosticsId: '1234567898'
+          #         recoverySuggestion: "Please provide a valid client token."
+          #   # error - RequestValidationError
+          #   - response:
+          #       error: commons.RequestValidationError
+          #       body:
+          #         errorId: RequestValidationError
+          #         description: >-
+          #           We were unable to validate your request, please check your payload
+          #           against https://primer.io/docs/api
+          #         diagnosticsId: '1234567898'
+          #         validationErrors:
+          #           - model: ClientSessionAPIRequest
+          #             errors:
+          #               - path: $.customerId
+          #                 description: Value must be a valid string
 
 types:
-  
+
   OrderDetails:
     properties:
       lineItems:
@@ -510,18 +625,3 @@ types:
       message:
         type: optional<string>
         docs: More information as to the reason for the warning
-
-  RequestValidationErrorBody: 
-    extends: commons.BaseErrorBody
-
-  ClientSessionValidationErrorBody:
-    extends: commons.BaseErrorBody 
-
-errors: 
-  ClientSessionValidationError:
-    status-code: 400
-    type: ClientSessionValidationErrorBody
-
-  RequestValidationError:
-    status-code: 422
-    type: RequestValidationErrorBody

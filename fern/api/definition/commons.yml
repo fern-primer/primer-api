@@ -4,8 +4,8 @@ types:
   MerchantId: string
   CustomerId: string
   OrderId: string
-  ErrorId: string 
-  diagnosticsId: string 
+  ErrorId: string
+  DiagnosticsId: string
 
   BillingAddress:
     properties:
@@ -544,18 +544,63 @@ types:
       - CHARGE
       - DEFERRED_DEBIT
       - UNKNOWN
-  
+
   BaseErrorBody:
     properties:
-      errorId: 
-        type: ErrorId 
+      errorId:
+        type: ErrorId
         docs: An error ID
       description:
-        type: string 
+        type: string
         docs: A human description of the error
-      diagnosticsId: 
-        type: diagnosticsId
-        docs: An ID that you can quote when contacting the support team (support@primer.io). 
+      diagnosticsId:
+        type: DiagnosticsId
+        docs: | 
+          An ID that you can quote when contacting the support team
+          (support@primer.io).
+
+  FailedVerificationErrorBody: 
+    extends: BaseErrorBody
+
+  RequestValidationErrorBody: 
+    extends: BaseErrorBody
+    properties:
       validationErrors: 
-        type: unknown 
+        type: unknown
         docs: Returned in case of a badly formed request
+
+  ValidationModelError: 
+    properties:
+      path: string
+      description: string
+
+  ClientSessionValidationErrorBody: 
+    extends: BaseErrorBody
+    properties:
+      recoverySuggestion: string
+
+  PaymentsRequestValidationBody: 
+    extends: BaseErrorBody
+    properties:
+      recoverySuggestion: string 
+
+errors:
+  # ValidationError:
+  #   status-code: 400
+  #   type: ValidationErrorBody
+
+  RequestValidationError:
+    status-code: 422
+    type: RequestValidationErrorBody
+
+  ClientSessionValidationError: 
+    status-code: 400
+    type: ClientSessionValidationErrorBody
+  
+  FailedVerificationError: 
+    status-code: 400
+    type: FailedVerificationErrorBody
+  
+  PaymentsRequestValidationError:
+    status-code: 422 
+    type: PaymentsRequestValidationBody

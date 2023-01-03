@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
 imports:
   commons: commons.yml
   client: client-session.yml
@@ -21,7 +23,6 @@ services:
             Payments will be available within a minute from being created.
           method: GET
           path: /
-          response: PaymentsData
           request:
             name: GetPaymentsList
             query-parameters:
@@ -83,6 +84,34 @@ services:
               cursor:
                 type: optional<integer>
                 docs: If results are paginated, pass the nextCursor to access next page.
+          response: PaymentsData
+          errors: 
+            - commons.PaymentsRequestValidationError
+          examples: 
+            - response: 
+                body: 
+                  data:
+                    - id: IHQlakKC
+                      date: '2021-03-24T14:56:56.869248'
+                      status: SETTLED
+                      orderId: my-order-123
+                      currencyCode: EUR
+                      amount: 700
+                      processor:
+                        name: STRIPE
+                        processorMerchantId: acct_stripe_1234
+                      metadata:
+                        productId: 123
+                        merchantId: a13bsd62s
+                  nextCursor: string
+                  prevCursor: string
+            - response: 
+                error: commons.PaymentsRequestValidationError
+                body: 
+                  errorId: RequestValidationError
+                  description: Invalid type for `currencyCode`
+                  recoverySuggestion: The currency code must be a valid value
+                  diagnosticsId: '1234567898'
 
         create:
           docs: |
@@ -137,6 +166,8 @@ services:
                   type: optional<client.ClientPaymentMethod>
                   docs: Enable certain options associated with the payment method.
           response: PaymentResponse
+          # errors: 
+          #   - 
 
         capture:
           docs: |
