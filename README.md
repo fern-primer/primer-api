@@ -1,10 +1,10 @@
 # Primer API
 
-Tagging a release on this repository will update the following GitHub repos:
+Tagging a release on this repository will update the:
 
-- [TypeScript SDK](https://github.com/fern-primer/primer-node)
-- [OpenAPI description](https://github.com/fern-primer/primer-openapi)
-- [Postman Collection](https://github.com/fern-primer/primer-postman)
+- [TypeScript SDK repo](https://github.com/fern-primer/primer-node)
+- [OpenAPI description repo](https://github.com/fern-primer/primer-openapi)
+- [Postman Collection repo](https://github.com/fern-primer/primer-postman)
 - _More SDKs to come..._
 
 ## What is in this repository?
